@@ -4,7 +4,6 @@ from sklearn.preprocessing import LabelEncoder
 from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier
-import pickle
 
 # Load the data
 print("Loading data...")
@@ -56,7 +55,6 @@ print(f"Testing accuracy: {test_score:.4f}")
 
 # Save the model
 print("Saving model...")
-with open('model.pkl', 'wb') as file:
-    pickle.dump(model, file)
+model.save_model('model.json')
 
 print("Model training and saving completed!") 

@@ -9,13 +9,14 @@ import json
 import sys
 from datetime import datetime
 import os
+from xgboost import XGBClassifier
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
 
 # Load the trained model
-with open('model.pkl', 'rb') as file:
-    model = pickle.load(file)
+model = XGBClassifier()
+model.load_model('model.json')
 
 # Load and preprocess data for visualizations
 df = pd.read_csv('train.csv')
