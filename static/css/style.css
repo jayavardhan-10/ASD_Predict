@@ -526,4 +526,13 @@ h1, h2, h3, h4, h5, h6 {
 /* Navbar spacing for theme toggle */
 .navbar .btn {
     margin-left: 1.2rem;
+}
+
+/* Ensure plot containers are always visible */
+#pieChart, #histogram {
+    min-height: 350px;
+    min-width: 350px;
+    background: rgba(0,0,0,0.05);
+    border-radius: 12px;
+    margin-bottom: 1rem;
 } 
