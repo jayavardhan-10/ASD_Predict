@@ -49,11 +49,28 @@ backToTopBtn.addEventListener('click', function() {
 
 // --- Rest of the app logic ---
 // Initialize statistics counters (global scope)
-const totalCasesCounter = new CountUp('totalCases', 0);
-const autismCasesCounter = new CountUp('autismCases', 0);
-const nonAutismCasesCounter = new CountUp('nonAutismCases', 0);
+let totalCasesCounter, autismCasesCounter, nonAutismCasesCounter;
+
+// Function to initialize counters
+function initializeCounters() {
+    try {
+        if (typeof CountUp === 'function') {
+            totalCasesCounter = new CountUp('totalCases', 0);
+            autismCasesCounter = new CountUp('autismCases', 0);
+            nonAutismCasesCounter = new CountUp('nonAutismCases', 0);
+            console.log('CountUp counters initialized successfully');
+        } else {
+            console.error('CountUp is not defined. Check if the library is loaded properly.');
+        }
+    } catch (error) {
+        console.error('Error initializing counters:', error);
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize counters
+    initializeCounters();
+    
     // Load initial statistics
     fetchStats();
 
@@ -74,29 +91,6 @@ document.addEventListener('DOMContentLoaded', function() {
     tooltipTriggerList.map(function(tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
-
-    // Statistics Animation
-    const options = {
-        duration: 2,
-        useEasing: true,
-        useGrouping: true,
-        separator: ',',
-        decimal: '.'
-    };
-    const statsCard = document.querySelector('.stats-card');
-    if (statsCard) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    totalCasesCounter.start();
-                    autismCasesCounter.start();
-                    nonAutismCasesCounter.start();
-                    observer.unobserve(entry.target);
-                }
-            });
-        });
-        observer.observe(statsCard);
-    }
 });
 
 function addScoreInputs() {
@@ -146,10 +140,34 @@ async function fetchStats() {
     try {
         const response = await fetch('/get_stats');
         const data = await response.json();
-        // Update counters with animation
-        totalCasesCounter.update(data.total_cases);
-        autismCasesCounter.update(data.autism_cases);
-        nonAutismCasesCounter.update(data.non_autism_cases);
+        console.log('DEBUG: Stats data received:', data); // Debug log
+        
+        // Set the values directly first to ensure they're visible
+        document.getElementById('totalCases').textContent = data.total_cases;
+        document.getElementById('autismCases').textContent = data.autism_cases;
+        document.getElementById('nonAutismCases').textContent = data.non_autism_cases;
+        
+        // Then try to animate if the CountUp library is working
+        try {
+            // Check if CountUp objects exist before using them
+            if (typeof totalCasesCounter !== 'undefined' && totalCasesCounter) {
+                totalCasesCounter.reset();
+                totalCasesCounter.update(data.total_cases);
+            }
+            
+            if (typeof autismCasesCounter !== 'undefined' && autismCasesCounter) {
+                autismCasesCounter.reset();
+                autismCasesCounter.update(data.autism_cases);
+            }
+            
+            if (typeof nonAutismCasesCounter !== 'undefined' && nonAutismCasesCounter) {
+                nonAutismCasesCounter.reset();
+                nonAutismCasesCounter.update(data.non_autism_cases);
+            }
+        } catch (animError) {
+            console.error('Error animating counters:', animError);
+        }
+        
         // Create visualizations
         if (data.visualizations && data.visualizations.pie_chart) createPieChart(data.visualizations.pie_chart);
         if (data.visualizations && data.visualizations.histogram) createHistogram(data.visualizations.histogram);
