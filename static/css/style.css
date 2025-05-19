@@ -63,6 +63,33 @@ body {
     text-shadow: 0 2px 12px rgba(0,0,0,0.28);
 }
 
+/* Hero section background image and overlay */
+.hero-bg-image {
+    position: relative;
+    background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80'); /* Abstract science/neurodiversity */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(20, 20, 40, 0.6); /* dark overlay for contrast */
+    z-index: 2;
+}
+.hero-bg-image .container.position-relative {
+    position: relative;
+    z-index: 3;
+}
+.hero-section h1, .hero-section p {
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
 /* Cards */
 .card {
     background: var(--card-bg);
