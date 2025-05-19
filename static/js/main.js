@@ -163,7 +163,10 @@ async function fetchStats() {
 
 function createPieChart(data) {
     const pieData = JSON.parse(data);
+    console.log('Pie chart data:', pieData);
     const isDark = html.getAttribute('data-bs-theme') === 'dark';
+    const pieChartDiv = document.getElementById('pieChart');
+    if (pieChartDiv) pieChartDiv.style.minHeight = '350px';
     Plotly.newPlot('pieChart', pieData.data, {
         ...pieData.layout,
         paper_bgcolor: isDark ? '#181c24' : '#fff',
@@ -174,7 +177,10 @@ function createPieChart(data) {
 
 function createHistogram(data) {
     const histData = JSON.parse(data);
+    console.log('Histogram data:', histData);
     const isDark = html.getAttribute('data-bs-theme') === 'dark';
+    const histogramDiv = document.getElementById('histogram');
+    if (histogramDiv) histogramDiv.style.minHeight = '350px';
     Plotly.newPlot('histogram', histData.data, {
         ...histData.layout,
         paper_bgcolor: isDark ? '#181c24' : '#fff',
