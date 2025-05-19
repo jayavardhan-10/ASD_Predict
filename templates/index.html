@@ -178,19 +178,19 @@
             </div>
         </div>
 
-        <!-- Visualizations -->
+        <!-- Visualizations Replacement: Stats Summary and Table -->
         <div class="row mt-4">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <div id="pieChart"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <div id="histogram"></div>
+                        <h5 class="card-title">Dataset Summary</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Total Cases: <span id="summaryTotalCases">-</span></li>
+                            <li class="list-group-item">Autism Cases: <span id="summaryAutismCases">-</span></li>
+                            <li class="list-group-item">Non-Autism Cases: <span id="summaryNonAutismCases">-</span></li>
+                            <li class="list-group-item">Average Age: <span id="summaryAvgAge">-</span></li>
+                            <li class="list-group-item">Gender Distribution: <span id="summaryGenderDist">-</span></li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -211,5 +211,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+    // Fetch and display summary stats
+    fetch('/get_stats').then(r => r.json()).then(stats => {
+        document.getElementById('summaryTotalCases').textContent = stats.total_cases;
+        document.getElementById('summaryAutismCases').textContent = stats.autism_cases;
+        document.getElementById('summaryNonAutismCases').textContent = stats.non_autism_cases;
+        document.getElementById('summaryAvgAge').textContent = stats.age_statistics.mean ? Number(stats.age_statistics.mean).toFixed(1) : '-';
+        let g = stats.gender_distribution;
+        let gText = Object.keys(g).map(k => `${k.toUpperCase()}: ${g[k]}`).join(', ');
+        document.getElementById('summaryGenderDist').textContent = gText || '-';
+    });
+    </script>
 </body>
 </html> 
