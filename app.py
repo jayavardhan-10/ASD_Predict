@@ -93,33 +93,42 @@ def predict():
 @app.route('/get_stats')
 def get_stats():
     try:
+        # Debug: Print DataFrame head and unique values
+        print('DEBUG: DataFrame head:', df.head(), file=sys.stderr)
+        print('DEBUG: Class/ASD unique:', df['Class/ASD'].unique() if 'Class/ASD' in df.columns else 'N/A', file=sys.stderr)
+        print('DEBUG: Age unique:', df['age'].unique() if 'age' in df.columns else 'N/A', file=sys.stderr)
         # Calculate statistics
         total_cases = len(df)
         autism_cases = int(df['Class/ASD'].sum()) if 'Class/ASD' in df.columns else 0
         non_autism_cases = total_cases - autism_cases
-        
         # Gender distribution
         gender_dist = df['gender'].value_counts().to_dict() if 'gender' in df.columns else {}
-        
         # Age distribution
         age_dist = df['age'].describe().to_dict() if 'age' in df.columns else {}
-        
         # Create visualizations
-        fig1 = px.pie(
-            df, 
-            names='Class/ASD', 
-            title='Autism vs Non-Autism Distribution',
-            color_discrete_sequence=px.colors.qualitative.Set3
-        ) if 'Class/ASD' in df.columns and df['Class/ASD'].nunique() > 0 else None
-        
-        fig2 = px.histogram(
-            df, 
-            x='age', 
-            color='Class/ASD', 
-            title='Age Distribution by Autism Status',
-            color_discrete_sequence=px.colors.qualitative.Set3
-        ) if 'age' in df.columns and 'Class/ASD' in df.columns and df['age'].notnull().any() else None
-        
+        fig1 = None
+        if 'Class/ASD' in df.columns and df['Class/ASD'].nunique() > 0:
+            fig1 = px.pie(
+                df, 
+                names='Class/ASD', 
+                title='Autism vs Non-Autism Distribution',
+                color_discrete_sequence=px.colors.qualitative.Set3
+            )
+            print('DEBUG: Pie chart created', file=sys.stderr)
+        else:
+            print('DEBUG: Pie chart not created', file=sys.stderr)
+        fig2 = None
+        if 'age' in df.columns and 'Class/ASD' in df.columns and df['age'].notnull().any():
+            fig2 = px.histogram(
+                df, 
+                x='age', 
+                color='Class/ASD', 
+                title='Age Distribution by Autism Status',
+                color_discrete_sequence=px.colors.qualitative.Set3
+            )
+            print('DEBUG: Histogram created', file=sys.stderr)
+        else:
+            print('DEBUG: Histogram not created', file=sys.stderr)
         # Add more detailed statistics
         stats = {
             'total_cases': total_cases,
@@ -134,9 +143,10 @@ def get_stats():
                 'histogram': json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder) if fig2 else None
             }
         }
-        
+        print('DEBUG: Stats response ready', file=sys.stderr)
         return jsonify(stats)
     except Exception as e:
+        print('DEBUG: Exception in /get_stats:', str(e), file=sys.stderr)
         return jsonify({
             'error': str(e),
             'status': 'error'
