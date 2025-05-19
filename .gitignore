@@ -35,7 +35,6 @@ wheels/
 *.swo
 
 # Model files (if they're too large)
-*.pkl
 *.h5
 *.model
 
