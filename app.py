@@ -176,5 +176,9 @@ def set_theme():
 def get_theme():
     return jsonify({'theme': session.get('theme', 'light')})
 
+@app.route('/debug-csv')
+def debug_csv():
+    return df.head(20).to_html()
+
 if __name__ == '__main__':
     app.run(debug=True) 
