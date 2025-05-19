@@ -83,17 +83,14 @@ document.addEventListener('DOMContentLoaded', function() {
         separator: ',',
         decimal: '.'
     };
-    const totalCases = new CountUp('totalCases', 0, 800, 0, 2, options);
-    const autismCases = new CountUp('autismCases', 0, 400, 0, 2, options);
-    const nonAutismCases = new CountUp('nonAutismCases', 0, 400, 0, 2, options);
     const statsCard = document.querySelector('.stats-card');
     if (statsCard) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    totalCases.start();
-                    autismCases.start();
-                    nonAutismCases.start();
+                    totalCasesCounter.start();
+                    autismCasesCounter.start();
+                    nonAutismCasesCounter.start();
                     observer.unobserve(entry.target);
                 }
             });
@@ -154,8 +151,8 @@ async function fetchStats() {
         autismCasesCounter.update(data.autism_cases);
         nonAutismCasesCounter.update(data.non_autism_cases);
         // Create visualizations
-        if (data.visualizations.pie_chart) createPieChart(data.visualizations.pie_chart);
-        if (data.visualizations.histogram) createHistogram(data.visualizations.histogram);
+        if (data.visualizations && data.visualizations.pie_chart) createPieChart(data.visualizations.pie_chart);
+        if (data.visualizations && data.visualizations.histogram) createHistogram(data.visualizations.histogram);
     } catch (error) {
         console.error('Error fetching statistics:', error);
     }
